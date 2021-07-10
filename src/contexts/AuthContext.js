@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
-
 import {auth} from '../firebase'
+
 
 const AuthContext = React.createContext()
 
@@ -22,15 +22,20 @@ export const AuthProvider = ({children}) => {
         })
     }
 
+    // TODO : Forgot password
+
     const login = (email, password) => {
         return auth.signInWithEmailAndPassword(email,password)
     }
 
     const updateProfile = (username) => {
-        return auth.updateCurrentUser(auth.currentUser).then(user => {
+        const currentUser = auth.currentUser;
+        return auth.updateCurrentUser(currentUser).then(user => {
             user.displayName = username;
         }).catch(err => console.log(err))
     }
+
+
 
 
     const logout = (email,password) => {
@@ -49,14 +54,20 @@ export const AuthProvider = ({children}) => {
         return unsub
     }, [])
 
-    
+    const updateProfilePicture = (imageURL) => {
+        console.log(imageURL)
+        return auth.currentUser.updateProfile({
+            photoURL: imageURL
+        })
+    }
 
     const value = {
         currentUser,
         signup,
         logout,
         updateProfile,
-        login
+        login,
+        updateProfilePicture,
     }
 
     return (

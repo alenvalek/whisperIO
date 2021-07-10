@@ -1,10 +1,35 @@
 import React, { useRef, useState } from 'react'
-import {Form, Card, Button, Alert} from 'react-bootstrap'
+import { FormGroup, FormControl, Card, Button, CardContent, Typography, TextField } from '@material-ui/core'
 import { Link, useHistory } from 'react-router-dom'
 import {useAuth} from '../contexts/AuthContext'
+import { makeStyles } from '@material-ui/core/styles';
+import { Alert, AlertTitle } from '@material-ui/lab';
+
+
+const useStyles = makeStyles({
+    root: {
+        textAlign: 'center',
+        marginBottom: '2rem'
+    },
+    btn: {
+        width: '100%',
+        marginTop: '1rem',
+    },
+    box: {
+        textAlign: 'center',
+        marginTop: '2rem',
+        width: '100%'
+    },
+    alert: {
+        marginBottom: '1rem',
+    }
+  });
+
 
 const Login = () => {
     
+    const classes = useStyles();
+
     const emailRef = useRef()
     const passwordRef = useRef()
 
@@ -26,7 +51,7 @@ const Login = () => {
             history.push("/dashboard")
         }
         catch(err) {
-            setError("Failed to create an account")
+            setError("Failed to login into an account")
         }
 
         setLoading(false)
@@ -34,28 +59,33 @@ const Login = () => {
 
     return (
         <>
-            <Card>
-                <Card.Body>
-                    <h2 className="text-center mb-4">Log In</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group id="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" ref={emailRef} required />
-                        </Form.Group>
+            <Card elevation={3}>
+                <CardContent>
+                    <Typography variant="h3" className={classes.root}>Log In</Typography>
+                    {error && 
+                    <Alert severity="error" className={classes.alert}>
+                        <AlertTitle><strong>Error</strong></AlertTitle>
+                            {error}
+                    </Alert>}
+                    <form onSubmit={handleSubmit}>
+                        
+                        <FormGroup id="email" >
+                            <FormControl >
+                                <TextField id="email" type="email" variant="standard" inputRef={emailRef} label="Email" required />
+                            </FormControl>
+                        </FormGroup>
 
                     
-                        <Form.Group id="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} required />
-                        </Form.Group>
-                    
-                        <Button type="submit" disabled={loading} className="w-100 mt-2">Log In</Button>
-                    </Form>
-                </Card.Body>
+                        <FormGroup id="password" >
+                            <FormControl margin="normal">
+                                <TextField id="password" type="password" variant="standard" inputRef={passwordRef} label="Password" required />
+                            </FormControl>
+                        </FormGroup>
+                        <Button type="submit" disabled={loading} color="primary" variant="contained" className={classes.btn}>Log In</Button>
+                    </form>
+                </CardContent>
             </Card>
-
-            <div className="w-100 text-center mt-2">
+            <div className={classes.box}>
                 Don't have an account? <Link to="/signup">Sign Up</Link>
             </div>
         </>

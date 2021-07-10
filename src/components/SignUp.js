@@ -1,9 +1,34 @@
 import React, { useRef, useState } from 'react'
-import {Form, Card, Button, Alert} from 'react-bootstrap'
+import {FormGroup, FormControl, Card, Button, CardContent, Typography, TextField } from '@material-ui/core'
 import { Link, useHistory } from 'react-router-dom'
 import {useAuth} from '../contexts/AuthContext'
+import { makeStyles } from '@material-ui/core/styles';
+import { Alert, AlertTitle } from '@material-ui/lab';
+
+
+const useStyles = makeStyles({
+    root: {
+        textAlign: 'center',
+        marginBottom: '2rem'
+    },
+    btn: {
+        width: '100%',
+        marginTop: '1rem',
+    },
+    box: {
+        textAlign: 'center',
+        marginTop: '2rem',
+        width: '100%'
+    },
+    alert: {
+        marginBottom: '1rem',
+    }
+});
+
 
 const SignUp = () => {
+
+    const classes = useStyles()
     
     const usernameRef = useRef()
     const emailRef = useRef()
@@ -20,6 +45,13 @@ const SignUp = () => {
     const handleSubmit = async e => {
         e.preventDefault()
 
+        console.log({
+            username: usernameRef.current.value,
+            email: emailRef.current.value,
+            currentPassword: passwordRef.current.value,
+            passwordConfirmation: passwordConfRef.current.value
+        })
+
         if(passwordRef.current.value !== passwordConfRef.current.value)
         {
             return setError("Password do not match")
@@ -33,7 +65,7 @@ const SignUp = () => {
             history.push("/dashboard")
         }
         catch(err) {
-            setError("Failed to log in")
+            setError("Failed to create an account")
         }
 
         setLoading(false)
@@ -42,40 +74,46 @@ const SignUp = () => {
     return (
         <>
             <Card>
-                <Card.Body>
-                    <h2 className="text-center mb-4">Sign Up</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit}>
+                <CardContent>
+                    <Typography variant="h3" className={classes.root}>Sign Up</Typography>
+                    {error && 
+                    <Alert severity="error" className={classes.alert}>
+                        <AlertTitle><strong>Error</strong></AlertTitle>
+                        {error}
+                    </Alert>}
+                    <form onSubmit={handleSubmit}>
+                        <FormGroup id="username">
+                            <FormControl margin="normal" >
+                                <TextField id="username" type="username" variant="standard" inputRef={usernameRef} label="Username" required />
+                            </FormControl>
+                        </FormGroup>
 
-                        <Form.Group id="username">
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control type="username" ref={usernameRef} required />
-                        </Form.Group>
-
-                        <Form.Group id="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" ref={emailRef} required />
-                        </Form.Group>
-
-                    
-                        <Form.Group id="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} required />
-                        </Form.Group>
-                    
+                        <FormGroup id="email" margin="normal" >
+                            <FormControl >
+                                <TextField id="email" type="email" variant="standard" inputRef={emailRef} label="Email" required />
+                            </FormControl>
+                        </FormGroup>
 
                     
-                        <Form.Group id="passwordConfirm">
-                            <Form.Label>Password Confirmation</Form.Label>
-                            <Form.Control type="password" ref={passwordConfRef} required />
-                        </Form.Group>
+                        <FormGroup id="password">
+                            <FormControl margin="normal">
+                                <TextField id="password" type="password" variant="standard" inputRef={passwordRef} label="Password" required />
+                            </FormControl>
+                        </FormGroup>
+                    
+                    
+                        <FormGroup id="passwordConfirm">
+                            <FormControl margin="normal" >
+                                <TextField id="passwordConf" type="password" variant="standard" inputRef={passwordConfRef} label="Confirm password" required />
+                            </FormControl>
+                        </FormGroup>
 
-                        <Button type="submit" disabled={loading} className="w-100 mt-2">Sign Up</Button>
-                    </Form>
-                </Card.Body>
+                        <Button type="submit" disabled={loading} color="primary" variant="contained" className={classes.btn}>Sign Up</Button>
+                    </form>
+                </CardContent>
             </Card>
 
-            <div className="w-100 text-center mt-2">
+            <div className={classes.box}>
                 Already have an account? <Link to="/login">Log In</Link>
             </div>
         </>
